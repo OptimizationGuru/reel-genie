@@ -9,18 +9,21 @@ const VideoEditor: React.FC = () => {
   const [endTime, setEndTime] = useState<string>('5')
   const [videoDuration, setVideoDuration] = useState<number>(0)
   const [trimOutputUrl, setTrimOutputUrl] = useState<string | null>(null)
-
   useEffect(() => {
     const loadFFmpeg = async () => {
-      const ffmpegInstance = createFFmpeg({
-        log: true,
-        corePath: 'https://localhost:5173/ffmpeg-core.js',
-        locateFile: (file: string) => `https://localhost:5173/${file}`,
-      } as any)
+      try {
+        const ffmpegInstance = createFFmpeg({
+          log: true,
+          corePath: 'https://localhost:5173/ffmpeg-core.js',
+          locateFile: (file: string) => `https://localhost:5173/${file}`,
+        } as any)
 
-      await ffmpegInstance.load()
-      setFfmpeg(ffmpegInstance)
-      setIsLoaded(true)
+        await ffmpegInstance.load()
+        setFfmpeg(ffmpegInstance)
+        setIsLoaded(true)
+      } catch (error) {
+        console.error('Failed to load FFmpeg:', error)
+      }
     }
 
     loadFFmpeg()

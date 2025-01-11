@@ -16,7 +16,6 @@ const UpdatedVideoEditor: React.FC = () => {
   const [startTime, setStartTime] = useState<string>('0')
   const [endTime, setEndTime] = useState<string>('5')
 
-  const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([])
   const [currentText, setCurrentText] = useState('')
   const [fontSize, setFontSize] = useState(24)
   const [fontStyle, setFontStyle] = useState('Arial')
@@ -30,6 +29,10 @@ const UpdatedVideoEditor: React.FC = () => {
   const [imageHeight, setImageHeight] = useState<number>(100)
   const [imageStartTime, setImageStartTime] = useState<number>(0)
   const [imageEndTime, setImageEndTime] = useState<number>(5)
+
+  const [position, setPosition] = useState({ x: 100, y: 100 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [start, setStart] = useState({ x: 0, y: 0 })
 
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -148,6 +151,25 @@ const UpdatedVideoEditor: React.FC = () => {
     )
   }
 
+  const [textOverlays, setTextOverlays] = useState([
+    {
+      id: '1',
+      text: 'Sample Text',
+      position: { x: 0, y: 0 },
+      fontSize: 16,
+      fontStyle: 'Arial',
+      color: 'black',
+    },
+  ])
+
+  const updateTextPositionNew = (id: string, x: number, y: number) => {
+    setTextOverlays((prev) =>
+      prev.map((overlay) =>
+        overlay.id === id ? { ...overlay, position: { x, y } } : overlay
+      )
+    )
+  }
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
@@ -208,13 +230,19 @@ const UpdatedVideoEditor: React.FC = () => {
       .join(',')
 
     const imageInputs: string[] = []
+
     const overlayFilters: string[] = []
     imageOverlays.forEach((overlay, index) => {
-      ffmpeg.FS(
-        'writeFile',
-        `image${index}.png`,
-        Buffer.from(overlay.imageSrc.split(',')[1], 'base64')
-      )
+      const base64Data = overlay.imageSrc.split(',')[1]
+      const binaryString = atob(base64Data)
+      const binaryLength = binaryString.length
+      const binaryArray = new Uint8Array(binaryLength)
+
+      for (let i = 0; i < binaryLength; i++) {
+        binaryArray[i] = binaryString.charCodeAt(i)
+      }
+
+      ffmpeg.FS('writeFile', `image${index}.png`, binaryArray)
       imageInputs.push('-i', `image${index}.png`)
       overlayFilters.push(
         `[${index + 1}:v]scale=${overlay.width}:${overlay.height}[img${index}],` +
@@ -254,17 +282,45 @@ const UpdatedVideoEditor: React.FC = () => {
     setOutputUrl(URL.createObjectURL(blob))
   }
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    setIsDragging(true)
+    setStart({ x: e.clientX - position.x, y: e.clientY - position.y })
+  }
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging) {
+      setPosition({
+        x: e.clientX - start.x,
+        y: e.clientY - start.y,
+      })
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isDragging, start])
+
   return (
-    <div className="p-4">
+    <div className="border border-black p-4">
       <h1 className="mb-4 text-2xl font-bold">Video Editor</h1>
 
       {/* FFmpeg Loading Status */}
       {!isLoaded ? (
         <p>Loading FFmpeg... Please wait.</p>
       ) : (
-        <div>
+        <div className="">
           {/* Video Upload */}
-          <div className="mb-4">
+          <div className="border-blue mb-4 border bg-gray-200">
             <input
               type="file"
               accept="video/mp4"
@@ -342,7 +398,7 @@ const UpdatedVideoEditor: React.FC = () => {
               <video
                 src={trimOutputUrl}
                 controls
-                width="600"
+                width="200"
                 className="border"
               />
               <a
@@ -357,7 +413,7 @@ const UpdatedVideoEditor: React.FC = () => {
 
           {/* Text Overlay Controls */}
           <div className="mb-4">
-            <h2 className="text-xl font-semibold">Add Text Overlay</h2>
+            <h2 className="text-xl font-semibold">Add Text Overlay on Video</h2>
             <div className="mt-2 flex flex-col gap-2">
               <input
                 type="text"
@@ -427,7 +483,7 @@ const UpdatedVideoEditor: React.FC = () => {
                 className="rounded bg-green-500 px-4 py-2 text-white"
                 onClick={addTextOverlay}
               >
-                Add Text Overlay
+                Apply
               </button>
             </div>
           </div>
@@ -451,28 +507,69 @@ const UpdatedVideoEditor: React.FC = () => {
                 className="absolute left-0 top-0"
               />
               {textOverlays.map((overlay) => (
-                <Draggable
-                  key={overlay.id}
-                  position={overlay.position}
-                  onStop={(e, data) =>
-                    updateTextPosition(overlay.id, data.x, data.y)
-                  }
-                >
+                <>
+                  <Draggable
+                    key={overlay.id}
+                    position={overlay.position}
+                    onStop={(e, data) =>
+                      updateTextPosition(overlay.id, data.x, data.y)
+                    }
+                  >
+                    <div
+                      style={{
+                        position: 'absolute',
+                        fontSize: `${overlay.fontSize}px`,
+                        fontFamily: overlay.fontStyle,
+                        color: overlay.color,
+                        cursor: 'move',
+                        userSelect: 'none',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      {overlay.text}
+                    </div>
+                  </Draggable>
+
                   <div
                     style={{
                       position: 'absolute',
-                      fontSize: `${overlay.fontSize}px`,
-                      fontFamily: overlay.fontStyle,
-                      color: overlay.color,
+                      left: `${position.x}px`,
+                      top: `${position.y}px`,
+                      fontSize: '20px',
                       cursor: 'move',
                       userSelect: 'none',
-                      pointerEvents: 'none',
                     }}
+                    onMouseDown={handleMouseDown}
                   >
-                    {overlay.text}
+                    Drag Me!
                   </div>
-                </Draggable>
+                </>
               ))}
+
+              <div>
+                {textOverlays.map((overlay) => (
+                  <Draggable
+                    key={overlay.id}
+                    position={overlay.position}
+                    onStop={(e, data) =>
+                      updateTextPositionNew(overlay.id, data.x, data.y)
+                    }
+                  >
+                    <div
+                      style={{
+                        position: 'absolute',
+                        fontSize: `${overlay.fontSize}px`,
+                        fontFamily: overlay.fontStyle,
+                        color: overlay.color,
+                        cursor: 'move',
+                        userSelect: 'none',
+                      }}
+                    >
+                      {overlay.text}
+                    </div>
+                  </Draggable>
+                ))}
+              </div>
             </div>
           )}
 
@@ -537,7 +634,7 @@ const UpdatedVideoEditor: React.FC = () => {
                 className="rounded bg-green-500 px-4 py-2 text-white"
                 onClick={addImageOverlay}
               >
-                Add Image Overlay
+                Add Image
               </button>
             </div>
           </div>
@@ -576,7 +673,7 @@ const UpdatedVideoEditor: React.FC = () => {
                       width: `${overlay.width}px`,
                       height: `${overlay.height}px`,
                       cursor: 'move',
-                      pointerEvents: 'none',
+                      userSelect: 'none',
                     }}
                   />
                 </Draggable>
@@ -596,7 +693,7 @@ const UpdatedVideoEditor: React.FC = () => {
             </div>
           )}
 
-          {/* Download Final Video */}
+          Download Final Video
           {outputUrl && (
             <div className="mb-4">
               <h2 className="text-xl font-semibold">Final Video</h2>
