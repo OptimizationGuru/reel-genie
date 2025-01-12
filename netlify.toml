@@ -1,6 +1,6 @@
-[[build]
-  publish = "dist"        # Correct publish directory for Vite output
-  command = "npm run build"   # Correct build command
+[build]
+  publish = "dist"        
+  command = "npm run build"   
 
 [[headers]]
   for = "/"
@@ -14,6 +14,5 @@
     Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
 
-
 [[plugins]]
-  package = "@netlify/plugin-vite" 
+  package = "@netlify/plugin-vite"
