@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react'
-import { SketchPicker } from 'react-color'
+// import { SketchPicker } from 'react-color'
 import { Overlay, TextOverlayType } from '../types'
 
 interface DraggableTextOverlayComponentProps {
@@ -109,17 +109,17 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
             </div>
 
             {/* Color Picker (Only shows when toggled) */}
-            <div
+            {/* <div
               className="mt-2 flex justify-center"
               style={{ height: '0px', width: '0px' }} // Fixed height and width for color picker area
             >
               <SketchPicker
                 color={color}
                 onChangeComplete={(c) => setColor(c.hex)}
-                width={'50px'} // Set smaller width for SketchPicker
+                width={'100px'} // Set smaller width for SketchPicker
                 disableAlpha={false}
               />
-            </div>
+            </div> */}
 
             {/* Timings */}
             <div className="mt-8 flex flex-col gap-4">

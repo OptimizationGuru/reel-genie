@@ -102,7 +102,6 @@ const FavVideoEditor = () => {
 
     setIsProcessing(true)
     if (editedVideoUrl && showComponent !== 2) setShowComponent(2)
-    // console.log('loading start')
     ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(inputFile))
 
     const textOverlays = overlays.filter((el) => el.type === 'text')
@@ -178,9 +177,7 @@ const FavVideoEditor = () => {
     const data = ffmpeg.FS('readFile', 'output.mp4')
     const blob = new Blob([data.buffer], { type: 'video/mp4' })
     setEditedVideoUrl(URL.createObjectURL(blob))
-    // console.log('createObjectURL', URL.createObjectURL(blob))
     setIsProcessing(false)
-    // console.log('loading end')
     setTextOverlays(textOverlays)
     setImageOverlays(imageOverlays)
   }
@@ -216,11 +213,19 @@ const FavVideoEditor = () => {
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
+        // const ffmpegInstance = createFFmpeg({
+        //   log: true,
+        //   corePath: 'https://localhost:5173/ffmpeg-core.js',
+        //   locateFile: (file: string) => `https://localhost:5173/${file}`,
+        // } as any)
+
         const ffmpegInstance = createFFmpeg({
           log: true,
-          corePath: 'https://localhost:5173/ffmpeg-core.js',
-          locateFile: (file: string) => `https://localhost:5173/${file}`,
-        } as any)
+          corePath:
+            process.env.NODE_ENV === 'production'
+              ? `${process.env.REACT_APP_FFMPEG_CDN_URL}/ffmpeg-core.js`
+              : 'https://localhost:5173/ffmpeg-core.js',
+        })
 
         await ffmpegInstance.load()
         setFfmpeg(ffmpegInstance)
