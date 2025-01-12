@@ -14,33 +14,9 @@ import {
 
 import { RiVideoDownloadFill } from 'react-icons/ri'
 import Loader from './Loader'
+import { ImageOverlayType, Overlay, TextOverlayType } from '../types'
 
 const FavVideoEditor = () => {
-  type TextOverlayType = {
-    id: number
-    type: 'text'
-    text: string
-    fontSize: number
-    fontStyle: string
-    color: string
-    position: { x: number; y: number }
-    startTime: number
-    endTime: number
-  }
-
-  type ImageOverlayType = {
-    id: number
-    type: 'image'
-    imageSrc: string
-    width: number
-    height: number
-    position: { x: number; y: number }
-    startTime: number
-    endTime: number
-  }
-
-  type Overlay = TextOverlayType | ImageOverlayType
-
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null)
   const [textOverlays, setTextOverlays] = useState<TextOverlayType[]>([])
   const [imageOverlays, setImageOverlays] = useState<ImageOverlayType[]>([])

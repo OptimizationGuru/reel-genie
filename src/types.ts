@@ -20,7 +20,7 @@ export interface ImageOverlay {
 }
 
 export type TextOverlayType = {
-  id: number
+  id: string
   type: 'text'
   text: string
   fontSize: number
@@ -32,7 +32,7 @@ export type TextOverlayType = {
 }
 
 export type ImageOverlayType = {
-  id: number
+  id: string
   type: 'image'
   imageSrc: string
   width: number

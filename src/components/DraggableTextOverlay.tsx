@@ -104,28 +104,25 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
             </div>
 
             {/* Color Picker Toggle */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <label className="text-sm">Color:</label>
             </div>
 
             {/* Color Picker (Only shows when toggled) */}
             <div
-              className={`mt-2 flex justify-center`}
-              style={{ height: '200px', width: '300px' }} // Fixed height for color picker area
+              className="mt-2 flex justify-center"
+              style={{ height: '0px', width: '0px' }} // Fixed height and width for color picker area
             >
               <SketchPicker
                 color={color}
                 onChangeComplete={(c) => setColor(c.hex)}
-                width={160}
-                height={200}
-                disableAlpha={true}
-                presetColors={[]}
-                hex={false}
+                width={'50px'} // Set smaller width for SketchPicker
+                disableAlpha={false}
               />
             </div>
 
             {/* Timings */}
-            <div className="flex flex-col gap-4">
+            <div className="mt-8 flex flex-col gap-4">
               <div>
                 <h3 className="text-sm">Start Time: {textRange.start}s</h3>
                 <input
@@ -136,7 +133,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
                   onChange={(e) =>
                     setTextRange({
                       ...textRange,
-                      start: Number(e.target.value),
+                      start: e.target.value,
                     })
                   }
                   className="w-full accent-blue-500"
@@ -150,7 +147,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
                   max={videoDuration}
                   value={textRange.end}
                   onChange={(e) =>
-                    setTextRange({ ...textRange, end: Number(e.target.value) })
+                    setTextRange({ ...textRange, end: e.target.value })
                   }
                   className="w-full accent-blue-500"
                 />
