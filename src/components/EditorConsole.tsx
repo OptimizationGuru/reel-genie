@@ -3,33 +3,7 @@ import VideoWithOverlays from './AddLayovers'
 import TrimComponent from './TrimComponent'
 import DraggableTextOverlayComponent from './DraggableTextOverlay'
 import DraggableImageOverlayComponent from './DraggableImageOverlay'
-
-// Define Overlay type
-
-type TextOverlayType = {
-  id: number
-  type: 'text'
-  text: string
-  fontSize: number
-  fontStyle: string
-  color: string
-  position: { x: number; y: number }
-  startTime: number
-  endTime: number
-}
-
-type ImageOverlayType = {
-  id: number
-  type: 'image'
-  imageSrc: string
-  width: number
-  height: number
-  position: { x: number; y: number }
-  startTime: number
-  endTime: number
-}
-
-type Overlay = TextOverlayType | ImageOverlayType
+import { Overlay } from '../types'
 
 interface DraggableOverlayComponentProps {
   videoDuration: number
@@ -50,8 +24,7 @@ interface DraggableOverlayComponentProps {
   >
   trimVideo: () => void
   applyOverlay: () => void
-
-  // setIsTextOverlayAdded: React.Dispatch<React.SetStateAction<boolean>>
+  download: () => void
 }
 
 const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
@@ -67,11 +40,29 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
   trimVideo,
   applyOverlay,
   videoUrl,
+  download,
 }) => {
   return (
-    <div className="mx-auto flex flex-col items-center">
-      <div className="flex w-[500px] flex-col items-center justify-center gap-4">
-        {/* Text Overlay Component */}
+    <div className="flex w-[100%] flex-col items-center justify-start">
+      <div className="flex w-full items-center justify-center gap-4">
+        <div className="w-full justify-between gap-4">
+          <DraggableImageOverlayComponent
+            videoDuration={videoDuration}
+            imageOverlays={Overlays}
+            setImageOverlays={setOverlays}
+            imageRange={imageRange}
+            setImageRange={setImageRange}
+            applyOverlay={applyOverlay}
+          />
+
+          <TrimComponent
+            trimRange={trimRange}
+            setTrimRange={setTrimRange}
+            trimVideo={trimVideo}
+            videoDuration={videoDuration}
+          />
+        </div>
+
         <DraggableTextOverlayComponent
           videoDuration={videoDuration}
           textOverlays={Overlays}
@@ -80,30 +71,6 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
           setTextRange={setTextRange}
           applyOverlay={applyOverlay}
         />
-
-        {/* Image Overlay Component */}
-        <DraggableImageOverlayComponent
-          videoDuration={videoDuration}
-          imageOverlays={Overlays}
-          setImageOverlays={setOverlays}
-          imageRange={imageRange}
-          setImageRange={setImageRange}
-          applyOverlay={applyOverlay}
-        />
-
-        {/* Trim Video Component */}
-        <TrimComponent
-          trimRange={trimRange}
-          setTrimRange={setTrimRange}
-          trimVideo={trimVideo}
-          videoDuration={videoDuration}
-        />
-      </div>
-
-      {/* Video with Overlays */}
-      <div className="mt-4">
-        <h2 className="mb-2 text-lg font-bold">Preview</h2>
-        <VideoWithOverlays overlays={Overlays} videoUrl={videoUrl} />
       </div>
     </div>
   )

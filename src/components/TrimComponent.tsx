@@ -23,7 +23,7 @@ const TrimComponent: React.FC<TrimComponentProps> = ({
   }
 
   return (
-    <div className="flex flex-col border p-4">
+    <div className="flex w-auto flex-col border p-4">
       <h2 className="text-lg font-bold">Trim Video</h2>
       <div>
         <h3 className="text-sm">Start Time: {trimRange.start}s</h3>
@@ -51,7 +51,7 @@ const TrimComponent: React.FC<TrimComponentProps> = ({
         onClick={() => {
           trimVideo()
         }}
-        className="mx-auto my-2 w-40 items-center rounded-md bg-blue-500 px-3 py-3 text-white shadow-lg hover:bg-gray-300"
+        className="mx-auto w-32 justify-center rounded bg-blue-500 px-4 py-2 text-center text-sm text-white"
       >
         Trim Video
       </button>

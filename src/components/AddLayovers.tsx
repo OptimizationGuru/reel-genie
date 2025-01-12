@@ -1,29 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-
-type TextOverlayType = {
-  id: number
-  type: 'text'
-  text: string
-  fontSize: number
-  fontStyle: string
-  color: string
-  position: { x: number; y: number }
-  startTime: number
-  endTime: number
-}
-
-type ImageOverlayType = {
-  id: number
-  type: 'image'
-  imageSrc: string
-  width: number
-  height: number
-  position: { x: number; y: number }
-  startTime: number
-  endTime: number
-}
-
-type Overlay = TextOverlayType | ImageOverlayType
+import { Overlay } from '../types'
 
 interface VideoWithOverlaysProps {
   overlays: Overlay[]
