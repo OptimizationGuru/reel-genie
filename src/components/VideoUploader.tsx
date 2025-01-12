@@ -47,20 +47,22 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   }, [isProcessing])
 
   return (
-    <div className="mx-auto flex h-[500px] w-[600px] items-center bg-gradient-to-br from-teal-300 to-gray-800 p-4">
-      <div className="mx-auto max-w-lg rounded-lg bg-white p-8 text-center shadow-lg">
-        <h2 className="mb-4 text-xl font-semibold text-gray-800">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-300 to-gray-800 p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 text-center shadow-lg sm:p-8 md:max-w-lg">
+        <h2 className="mb-4 text-lg font-semibold text-gray-800 sm:text-xl md:text-2xl">
           Welcome to ClipCraft
           <br />
           Your ultimate video editing companion
         </h2>
-        <div className="mb-4 flex flex-col gap-3 rounded-lg border-2 border-dashed border-gray-300 p-6">
+
+        {/* Upload Section */}
+        <div className="mb-4 flex flex-col items-center gap-4 rounded-lg border-2 border-dashed border-gray-300 p-4 sm:p-6">
           <SiGoogledisplayandvideo360
             size={50}
             color="0d9488"
-            className="mx-auto"
+            className="text-teal-500"
           />
-          <label className="mx-auto flex w-40 cursor-pointer items-center gap-2 rounded-md bg-teal-500 px-4 py-2 text-white hover:bg-teal-600">
+          <label className="flex w-36 cursor-pointer items-center justify-center gap-2 rounded-md bg-teal-500 px-4 py-2 text-sm text-white hover:bg-teal-600 sm:w-40">
             Upload Video{' '}
             <span>
               <RiVideoUploadFill size={20} />
@@ -73,7 +75,8 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
             />
           </label>
         </div>
-        <p className="text-sm text-gray-500">
+
+        <p className="text-sm text-gray-500 sm:text-base">
           Upload your video to start editing with ClipCraft. Whether it's
           trimming, adding effects, or enhancing quality, we've got you covered!
         </p>

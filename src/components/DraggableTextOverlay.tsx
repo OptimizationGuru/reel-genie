@@ -58,10 +58,13 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
       }
 
       return (
-        <div className="w-[100%] border p-3 -mt-16">
-          <h2 className="text-lg font-bold">Text Overlays</h2>
+        <div className="mx-auto -mt-10 flex h-auto w-full max-w-lg flex-col rounded-lg border p-4 sm:p-6 lg:p-8">
+          <h2 className="text-center text-lg font-bold sm:text-left">
+            Text Overlays
+          </h2>
 
-          <div className="mt-2 flex flex-col space-y-2">
+          <div className="mt-4 flex flex-col gap-4">
+            {/* Text Input */}
             <input
               type="text"
               value={currentText}
@@ -70,8 +73,10 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
               className="w-full rounded border p-2 text-sm text-black"
             />
 
-            <div className="flex flex-col items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
+            {/* Font Settings */}
+            <div className="flex flex-col gap-4 sm:items-center sm:justify-between">
+              {/* Font Size */}
+              <div className="flex w-full items-center gap-2 sm:w-auto">
                 <label className="text-sm">Font Size: {fontSize}px</label>
                 <input
                   type="range"
@@ -82,12 +87,14 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
                   className="w-28"
                 />
               </div>
-              <div className="flex items-center gap-2">
+
+              {/* Font Style */}
+              <div className="flex w-full items-center gap-2 sm:w-auto">
                 <label className="text-sm">Font Style:</label>
                 <select
                   value={fontStyle}
                   onChange={(e) => setFontStyle(e.target.value)}
-                  className="w-32 rounded border p-1 text-sm"
+                  className="w-full rounded border p-1 text-sm sm:w-36"
                 >
                   <option value="Arial">Arial</option>
                   <option value="TimesNewRoman">Times New Roman</option>
@@ -96,42 +103,63 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
               </div>
             </div>
 
-            <div className="my-4 flex h-auto w-auto justify-evenly gap-2">
-              <label className="my-2 text-sm">Color:</label>
+            {/* Color Picker Toggle */}
+            <div className="flex items-center gap-2">
+              <label className="text-sm">Color:</label>
+            </div>
+
+            {/* Color Picker (Only shows when toggled) */}
+            <div
+              className={`mt-2 flex justify-center`}
+              style={{ height: '200px', width: '300px' }} // Fixed height for color picker area
+            >
               <SketchPicker
                 color={color}
                 onChangeComplete={(c) => setColor(c.hex)}
-                Size={30}
+                width={160}
+                height={200}
+                disableAlpha={true}
+                presetColors={[]}
+                hex={false}
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <div className="">
+            {/* Timings */}
+            <div className="flex flex-col gap-4">
+              <div>
                 <h3 className="text-sm">Start Time: {textRange.start}s</h3>
                 <input
                   type="range"
                   min="0"
                   max={videoDuration - 1}
                   value={textRange.start}
-                  onChange={(e) => setTimings('start', Number(e.target.value))}
+                  onChange={(e) =>
+                    setTextRange({
+                      ...textRange,
+                      start: Number(e.target.value),
+                    })
+                  }
                   className="w-full accent-blue-500"
                 />
               </div>
-              <div className="mt-2">
+              <div>
                 <h3 className="text-sm">End Time: {textRange.end}s</h3>
                 <input
                   type="range"
                   min={textRange.start}
                   max={videoDuration}
                   value={textRange.end}
-                  onChange={(e) => setTimings('end', Number(e.target.value))}
+                  onChange={(e) =>
+                    setTextRange({ ...textRange, end: Number(e.target.value) })
+                  }
                   className="w-full accent-blue-500"
                 />
               </div>
             </div>
 
+            {/* Apply Overlay Button */}
             <button
-              className="mx-auto w-32 justify-center rounded bg-blue-500 px-4 py-2 text-center text-sm text-white"
+              className="mx-auto mt-4 w-40 rounded bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
               onClick={addTextOverlay}
             >
               Apply Overlay

@@ -46,9 +46,10 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
   useEffect(() => setIsLoading(false), [Overlays])
 
   return (
-    <div className="flex w-[100%] flex-col items-center justify-start">
-      <div className="flex w-full items-center justify-center gap-4">
-        <div className={`mt-8 w-full justify-between gap-4 px-2`}>
+    <div className="flex h-auto w-full flex-col items-center justify-start">
+      <div className="flex w-full flex-col items-center gap-4 px-2 lg:flex-row">
+        {/* Left Section - ImageOverlay and TrimVideo */}
+        <div className="mb-12 flex w-full flex-col items-center gap-4 lg:w-1/2">
           <DraggableImageOverlayComponent
             videoDuration={videoDuration}
             imageOverlays={Overlays}
@@ -57,7 +58,6 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
             setImageRange={setImageRange}
             applyOverlay={applyOverlay}
           />
-
           <TrimComponent
             trimRange={trimRange}
             setTrimRange={setTrimRange}
@@ -65,9 +65,15 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
             videoDuration={videoDuration}
           />
         </div>
-        <div className="mx-4 h-[700px] w-[2px] bg-gray-300"></div>
+
+        {/* Divider - Only visible on larger screens */}
+        <div className="hidden h-auto w-[2px] bg-gray-300 lg:block"></div>
+
+        {/* Right Section - TextOverlay */}
         <div
-          className={`my-5 w-full justify-between gap-4 px-2 ${videoUrl ? 'b border-red-500' : ''}`}
+          className={`flex h-auto w-full flex-col items-center gap-4 lg:w-1/2 ${
+            videoUrl ? '' : ''
+          }`}
         >
           <DraggableTextOverlayComponent
             videoDuration={videoDuration}

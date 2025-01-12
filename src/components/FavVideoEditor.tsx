@@ -1,11 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createFFmpeg, fetchFile, FFmpeg } from '@ffmpeg/ffmpeg'
-import Draggable from 'react-draggable'
 import OverlayAddedVideo from './AddLayovers'
 import EditorConsole from './EditorConsole'
 import VideoUploader from './VideoUploader'
-import { warningMsg1, warningMsg2, warningMsg3 } from '../constant'
-import VideoPreview from './VideoPreview'
+import {
+  downlodButtonName,
+  infoMsg,
+  infoMsg2,
+  warningMsg1,
+  warningMsg2,
+  warningMsg3,
+} from '../constant'
+
 import { RiVideoDownloadFill } from 'react-icons/ri'
 import Loader from './Loader'
 
@@ -58,9 +64,6 @@ const FavVideoEditor = () => {
 
   const [videoDuration, setVideoDuration] = useState<number>(0)
   const [editedVideoUrl, setEditedVideoUrl] = useState<string>('')
-  const [position, setPosition] = useState({ x: 100, y: 100 })
-  const [isDragging, setIsDragging] = useState(false)
-  const [start, setStart] = useState({ x: 0, y: 0 })
 
   const [showComponent, setShowComponent] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
@@ -255,10 +258,12 @@ const FavVideoEditor = () => {
   }, [])
 
   return (
-    <div className="flex w-full flex-col items-center justify-around p-4">
+    <div className="mt-4 flex w-full flex-col items-center justify-around p-4">
+      {/* Loader */}
       <div className="absolute z-50">{isLoading && <Loader />}</div>
 
       <div className="h-auto w-full gap-4">
+        {/* Header */}
         {outputUrl && (
           <div className="fixed left-0 top-0 z-50 w-full bg-gray-50 shadow-md">
             <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3">
@@ -269,6 +274,7 @@ const FavVideoEditor = () => {
           </div>
         )}
 
+        {/* Video Uploader */}
         {!outputUrl && (
           <VideoUploader
             onVideoUpload={processVideo}
@@ -277,36 +283,42 @@ const FavVideoEditor = () => {
           />
         )}
 
+        {/* Video Editor Section */}
         {outputUrl && (
-          <div className={`relative mt-20 flex w-full justify-start gap-8`}>
+          <div className="relative mt-4 flex flex-col gap-8 md:flex-row">
+            {/* Editor Console */}
             <div
-              className={`w-[55%] rounded-2xl bg-gray-50 pt-8 shadow-xl ${outputUrl ? 'border border-red-500' : ''}`}
+              className={`w-full rounded-2xl bg-gray-50 pt-4 shadow-xl md:w-[55%] ${
+                outputUrl ? '' : ''
+              }`}
             >
-              {outputUrl && (
-                <EditorConsole
-                  videoDuration={videoDuration}
-                  Overlays={overlays}
-                  setOverlays={setOverlays}
-                  textRange={textOverlayRange}
-                  imageRange={imgOverlayRange}
-                  setTextRange={setTextOverlayRange}
-                  setImageRange={setImgOverlayRange}
-                  trimRange={trimRange}
-                  setTrimRange={setTrimRange}
-                  trimVideo={trimVideoWithRange}
-                  applyOverlay={processVideoWithOverlays}
-                  videoUrl={editedVideoUrl}
-                  download={downloadVideo}
-                  setIsLoading={setIsLoading}
-                />
-              )}
+              <EditorConsole
+                videoDuration={videoDuration}
+                Overlays={overlays}
+                setOverlays={setOverlays}
+                textRange={textOverlayRange}
+                imageRange={imgOverlayRange}
+                setTextRange={setTextOverlayRange}
+                setImageRange={setImgOverlayRange}
+                trimRange={trimRange}
+                setTrimRange={setTrimRange}
+                trimVideo={trimVideoWithRange}
+                applyOverlay={processVideoWithOverlays}
+                videoUrl={editedVideoUrl}
+                download={downloadVideo}
+                setIsLoading={setIsLoading}
+              />
             </div>
 
+            {/* Video Preview and Download */}
             <div
-              className={`flex w-[45%] flex-col rounded-2xl bg-gray-50 ${outputUrl ? 'border border-red-500' : ''}`}
+              className={`flex h-[450px] w-full flex-col rounded-2xl bg-gray-50 md:w-[45%] ${
+                outputUrl ? '' : ''
+              }`}
             >
               {outputUrl && (
-                <div className="mx-auto flex w-full max-w-lg flex-col gap-8 py-12">
+                <div className="mx-auto flex w-full max-w-lg flex-col gap-4 py-8">
+                  {/* Tab Navigation */}
                   <div className="flex justify-center border-b border-gray-300">
                     <ul className="flex w-full justify-center space-x-6">
                       <li
@@ -332,15 +344,15 @@ const FavVideoEditor = () => {
                     </ul>
                   </div>
 
-                  <div className="flex flex-col items-center">
-                    <div className="flex h-[400px] w-full items-center justify-center">
+                  {/* Video Preview */}
+                  <div className="flex w-full flex-col items-center px-4 py-2">
+                    <div className="flex w-full items-center justify-center">
                       {showComponent === 1 ? (
-                        <div className="flex flex-col items-center gap-4">
+                        <div className="flex w-full flex-col items-center gap-4">
                           <video
                             src={outputUrl}
                             controls
-                            className="rounded-lg shadow-md"
-                            width="600"
+                            className="w-full rounded-lg shadow-md sm:w-[600px] lg:w-[800px] xl:w-[1000px]"
                             ref={(ref) => {
                               if (ref && !videoDuration) {
                                 ref.onloadedmetadata = () => {
@@ -363,47 +375,35 @@ const FavVideoEditor = () => {
                           />
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center gap-4">
-                          <h2 className="text-lg font-medium text-gray-800">
-                            No Edited Video Available
+                        <div className="flex flex-col items-center gap-4 text-center">
+                          <h2 className="text-lg font-medium text-gray-800 sm:text-xl">
+                            {infoMsg2}
                           </h2>
-                          <p className="text-sm text-gray-600">
-                            Please upload or generate an edited video to view it
-                            here.
+                          <p className="max-w-[90%] text-sm text-gray-600 sm:text-base">
+                            {infoMsg}
                           </p>
                         </div>
+                      )}
+                    </div>
+
+                    {/* Download Button */}
+                    <div className="mx-auto my-2 flex h-16 w-36 items-center justify-center">
+                      {editedVideoUrl && (
+                        <button
+                          onClick={downloadVideo}
+                          className="flex w-36 items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
+                        >
+                          {downlodButtonName}
+                          <span>
+                            <RiVideoDownloadFill size={25} />
+                          </span>
+                        </button>
                       )}
                     </div>
                   </div>
                 </div>
               )}
-
-              {editedVideoUrl && (
-                <div className="mx-auto my-4 items-center justify-center">
-                  <button
-                    onClick={downloadVideo}
-                    className="flex w-36 items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-center text-white"
-                  >
-                    Download{' '}
-                    <span>
-                      <RiVideoDownloadFill size={25} />
-                    </span>
-                  </button>
-                </div>
-              )}
             </div>
-            {/* <VideoPreview
-            outputUrl={outputUrl}
-            editedVideoUrl={editedVideoUrl}
-            showComponent={showComponent}
-            setShowComponent={setShowComponent}
-            setTrimRange={setTrimRange}
-            setEndTime={setEndTime}
-            overlays={overlays}
-            downloadVideo={downloadVideo}
-            videoDuration={videoDuration}
-            setVideoDuration={setVideoDuration}
-          /> */}
           </div>
         )}
       </div>

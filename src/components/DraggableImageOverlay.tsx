@@ -80,11 +80,14 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
       ])
 
       return (
-        <div className="w-[100%] border p-4 -mt-24">
-          <h2 className="text-lg font-bold">Image Overlays</h2>
-          <div className="mt-2 flex flex-col gap-4">
-            <div className="mb-4 rounded-lg border-2 border-dashed border-gray-300 p-6">
-              <label className="mx-auto cursor-pointer rounded-md bg-teal-500 px-4 py-2 text-white hover:bg-teal-600">
+        <div className="w-full rounded-lg border p-4 sm:p-6 lg:px-8 lg:py-2">
+          <h2 className="my-2 py-2 text-center text-lg font-bold sm:text-left">
+            Image Overlays
+          </h2>
+          <div className="flex flex-col gap-6">
+            {/* Image Upload Section */}
+            <div className="rounded-lg border-2 border-dashed border-gray-300 p-6">
+              <label className="mx-auto block w-max cursor-pointer rounded-md bg-teal-500 px-4 py-2 text-white hover:bg-teal-600">
                 Upload Image
                 <input
                   type="file"
@@ -94,36 +97,41 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
                 />
               </label>
               {imageName && (
-                <div className="mt-2 text-sm text-gray-700">
+                <div className="mt-2 text-center text-sm text-gray-700 sm:text-left">
                   <strong>Uploaded Image:</strong> {imageName}
                 </div>
               )}
             </div>
-            <div className="ml-9 flex flex-col items-center gap-4">
-              <div className="flex gap-2">
-                <label>Width: {imageWidth}px</label>
-                <input
-                  type="range"
-                  min="50"
-                  max="500"
-                  value={imageWidth}
-                  onChange={(e) => setImageWidth(Number(e.target.value))}
-                />
-              </div>
-              <div className="flex gap-2">
-                <label>Height: {imageHeight}px</label>
-                <input
-                  type="range"
-                  min="50"
-                  max="500"
-                  value={imageHeight}
-                  onChange={(e) => setImageHeight(Number(e.target.value))}
-                />
+
+            {/* Dimensions Section */}
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex w-full flex-col gap-2 sm:w-auto">
+                <div className="flex items-center gap-2">
+                  <label>Width: {imageWidth}px</label>
+                  <input
+                    type="range"
+                    min="50"
+                    max="500"
+                    value={imageWidth}
+                    onChange={(e) => setImageWidth(Number(e.target.value))}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label>Height: {imageHeight}px</label>
+                  <input
+                    type="range"
+                    min="50"
+                    max="500"
+                    value={imageHeight}
+                    onChange={(e) => setImageHeight(Number(e.target.value))}
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-full px-8">
+            {/* Time Range Section */}
+            <div className="flex flex-col items-center gap-6">
+              <div className="w-full px-4 sm:px-8">
                 <h3 className="text-sm">Start Time: {imageRange.start}s</h3>
                 <input
                   type="range"
@@ -134,7 +142,7 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
                   className="w-full accent-blue-500"
                 />
               </div>
-              <div className="w-full px-8">
+              <div className="w-full px-4 sm:px-8">
                 <h3 className="text-sm">End Time: {imageRange.end}s</h3>
                 <input
                   type="range"
@@ -146,9 +154,11 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
                 />
               </div>
             </div>
+
+            {/* Apply Overlay Button */}
             <button
               onClick={addImageOverlay}
-              className="mx-auto w-32 justify-center rounded bg-blue-500 px-4 py-2 text-center text-sm text-white"
+              className="mx-auto w-40 justify-center rounded bg-blue-500 px-4 py-2 text-center text-sm text-white hover:bg-blue-600"
             >
               Apply Overlay
             </button>
