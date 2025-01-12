@@ -80,7 +80,7 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
       ])
 
       return (
-        <div className="w-[100%] border p-4">
+        <div className="w-[100%] border p-4 -mt-24">
           <h2 className="text-lg font-bold">Image Overlays</h2>
           <div className="mt-2 flex flex-col gap-4">
             <div className="mb-4 rounded-lg border-2 border-dashed border-gray-300 p-6">

@@ -49,7 +49,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   return (
     <div className="mx-auto flex h-[500px] w-[600px] items-center bg-gradient-to-br from-teal-300 to-gray-800 p-4">
       <div className="mx-auto max-w-lg rounded-lg bg-white p-8 text-center shadow-lg">
-        <h2 className="mb-4 text-xl font-semibold text-teal-400">
+        <h2 className="mb-4 text-xl font-semibold text-gray-800">
           Welcome to ClipCraft
           <br />
           Your ultimate video editing companion

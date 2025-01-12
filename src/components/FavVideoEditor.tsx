@@ -6,7 +6,8 @@ import EditorConsole from './EditorConsole'
 import VideoUploader from './VideoUploader'
 import { warningMsg1, warningMsg2, warningMsg3 } from '../constant'
 import VideoPreview from './VideoPreview'
-import { RiVideoDownloadFill } from "react-icons/ri";
+import { RiVideoDownloadFill } from 'react-icons/ri'
+import Loader from './Loader'
 
 const FavVideoEditor = () => {
   type TextOverlayType = {
@@ -62,6 +63,7 @@ const FavVideoEditor = () => {
   const [start, setStart] = useState({ x: 0, y: 0 })
 
   const [showComponent, setShowComponent] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Handle file upload
   const processVideo = async (file: File) => {
@@ -119,6 +121,9 @@ const FavVideoEditor = () => {
   const processVideoWithOverlays = async () => {
     if (!ffmpeg || !isLoaded || !inputFile) return
 
+    setIsProcessing(true)
+    if (editedVideoUrl && showComponent !== 2) setShowComponent(2)
+    // console.log('loading start')
     ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(inputFile))
 
     const textOverlays = overlays.filter((el) => el.type === 'text')
@@ -194,6 +199,9 @@ const FavVideoEditor = () => {
     const data = ffmpeg.FS('readFile', 'output.mp4')
     const blob = new Blob([data.buffer], { type: 'video/mp4' })
     setEditedVideoUrl(URL.createObjectURL(blob))
+    // console.log('createObjectURL', URL.createObjectURL(blob))
+    setIsProcessing(false)
+    // console.log('loading end')
     setTextOverlays(textOverlays)
     setImageOverlays(imageOverlays)
   }
@@ -209,49 +217,6 @@ const FavVideoEditor = () => {
       alert('Please generate a preview first!')
     }
   }
-
-  const updateTextPositionNew = (id: string, x: number, y: number) => {
-    setTextOverlays((prev) =>
-      prev.map((overlay) =>
-        overlay.id === id ? { ...overlay, position: { x, y } } : overlay
-      )
-    )
-  }
-
-  const updateImagePosition = (id: string, x: number, y: number) => {
-    setImageOverlays((prev) =>
-      prev.map((overlay) =>
-        overlay.id === id ? { ...overlay, position: { x, y } } : overlay
-      )
-    )
-  }
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    setIsDragging(true)
-    setStart({ x: e.clientX - position.x, y: e.clientY - position.y })
-  }
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - start.x,
-        y: e.clientY - start.y,
-      })
-    }
-  }
-
-  const handleMouseUp = () => {
-    setIsDragging(false)
-  }
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [isDragging, start])
 
   useEffect(() => {
     const videoRef = document.querySelector('video')
@@ -291,12 +256,16 @@ const FavVideoEditor = () => {
 
   return (
     <div className="flex w-full flex-col items-center justify-around p-4">
+      <div className="absolute z-50">{isLoading && <Loader />}</div>
+
       <div className="h-auto w-full gap-4">
         {outputUrl && (
-          <div className="mx-auto flex justify-center">
-            <h1 className="m-2 p-2 text-4xl font-semibold text-gray-600">
-              ClipCraft
-            </h1>
+          <div className="fixed left-0 top-0 z-50 w-full bg-gray-50 shadow-md">
+            <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3">
+              <h1 className="text-2xl font-bold text-gray-700 sm:text-3xl md:text-4xl">
+                ClipCraft
+              </h1>
+            </div>
           </div>
         )}
 
@@ -308,123 +277,122 @@ const FavVideoEditor = () => {
           />
         )}
 
-        <div className="flex w-full justify-start gap-8">
-          <div className="w-[55%] border border-red-500">
-            {outputUrl && (
-              <EditorConsole
-                videoDuration={videoDuration}
-                Overlays={overlays}
-                setOverlays={setOverlays}
-                textRange={textOverlayRange}
-                imageRange={imgOverlayRange}
-                setTextRange={setTextOverlayRange}
-                setImageRange={setImgOverlayRange}
-                trimRange={trimRange}
-                setTrimRange={setTrimRange}
-                trimVideo={trimVideoWithRange}
-                applyOverlay={processVideoWithOverlays}
-                videoUrl={editedVideoUrl}
-                download={downloadVideo}
-              />
-            )}
-          </div>
+        {outputUrl && (
+          <div className={`relative mt-20 flex w-full justify-start gap-8`}>
+            <div
+              className={`w-[55%] rounded-2xl bg-gray-50 pt-8 shadow-xl ${outputUrl ? 'border border-red-500' : ''}`}
+            >
+              {outputUrl && (
+                <EditorConsole
+                  videoDuration={videoDuration}
+                  Overlays={overlays}
+                  setOverlays={setOverlays}
+                  textRange={textOverlayRange}
+                  imageRange={imgOverlayRange}
+                  setTextRange={setTextOverlayRange}
+                  setImageRange={setImgOverlayRange}
+                  trimRange={trimRange}
+                  setTrimRange={setTrimRange}
+                  trimVideo={trimVideoWithRange}
+                  applyOverlay={processVideoWithOverlays}
+                  videoUrl={editedVideoUrl}
+                  download={downloadVideo}
+                  setIsLoading={setIsLoading}
+                />
+              )}
+            </div>
 
-          <div className="flex w-[45%] flex-col border border-pink-500">
-            {outputUrl && (
-              <div className="mx-auto flex w-full max-w-lg flex-col gap-8 py-12">
-                <div className="flex justify-center border-b border-gray-300">
-                  <ul className="flex w-full justify-center space-x-6">
-                    <li
-                      onClick={() => setShowComponent(1)}
-                      className={`cursor-pointer px-4 py-2 text-sm ${
-                        showComponent === 1
-                          ? 'border-designColor text-designColor border-b-2 font-semibold'
-                          : 'text-gray-600 hover:text-gray-800'
-                      }`}
-                    >
-                      Original Video
-                    </li>
-                    <li
-                      onClick={() => setShowComponent(2)}
-                      className={`cursor-pointer px-4 py-2 text-sm ${
-                        showComponent === 2
-                          ? 'border-designColor text-designColor border-b-2 font-semibold'
-                          : 'text-gray-600 hover:text-gray-800'
-                      }`}
-                    >
-                      Edited Video
-                    </li>
-                  </ul>
-                </div>
+            <div
+              className={`flex w-[45%] flex-col rounded-2xl bg-gray-50 ${outputUrl ? 'border border-red-500' : ''}`}
+            >
+              {outputUrl && (
+                <div className="mx-auto flex w-full max-w-lg flex-col gap-8 py-12">
+                  <div className="flex justify-center border-b border-gray-300">
+                    <ul className="flex w-full justify-center space-x-6">
+                      <li
+                        onClick={() => setShowComponent(1)}
+                        className={`cursor-pointer px-4 py-2 text-lg font-semibold ${
+                          showComponent === 1
+                            ? 'border-designColor text-designColor border-b-2 font-semibold'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        Original Video
+                      </li>
+                      <li
+                        onClick={() => setShowComponent(2)}
+                        className={`cursor-pointer px-4 py-2 text-lg font-semibold ${
+                          showComponent === 2
+                            ? 'border-designColor text-designColor border-b-2 font-semibold'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        Edited Video
+                      </li>
+                    </ul>
+                  </div>
 
-                <div className="flex flex-col items-center">
-                  <div className="flex h-[400px] w-full items-center justify-center">
-                    {showComponent === 1 ? (
-                      <div className="flex flex-col items-center gap-4">
-                        <h2 className="text-lg font-medium text-gray-800">
-                          Original Video
-                        </h2>
-                        <video
-                          src={outputUrl}
-                          controls
-                          className="rounded-lg shadow-md"
-                          width="600"
-                          ref={(ref) => {
-                            if (ref && !videoDuration) {
-                              ref.onloadedmetadata = () => {
-                                setVideoDuration(ref.duration)
-                                setTrimRange((prev) => ({
-                                  ...prev,
-                                  end: String(ref.duration),
-                                }))
-                                setEndTime(ref.duration.toString())
+                  <div className="flex flex-col items-center">
+                    <div className="flex h-[400px] w-full items-center justify-center">
+                      {showComponent === 1 ? (
+                        <div className="flex flex-col items-center gap-4">
+                          <video
+                            src={outputUrl}
+                            controls
+                            className="rounded-lg shadow-md"
+                            width="600"
+                            ref={(ref) => {
+                              if (ref && !videoDuration) {
+                                ref.onloadedmetadata = () => {
+                                  setVideoDuration(ref.duration)
+                                  setTrimRange((prev) => ({
+                                    ...prev,
+                                    end: String(ref.duration),
+                                  }))
+                                  setEndTime(ref.duration.toString())
+                                }
                               }
-                            }
-                          }}
-                        />
-                      </div>
-                    ) : editedVideoUrl ? (
-                      <div className="flex flex-col items-center gap-4">
-                        <h2 className="text-lg font-medium text-gray-800">
-                          Edited Video
-                        </h2>
-                        <OverlayAddedVideo
-                          overlays={overlays}
-                          videoUrl={editedVideoUrl}
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center gap-4">
-                        <h2 className="text-lg font-medium text-gray-800">
-                          No Edited Video Available
-                        </h2>
-                        <p className="text-sm text-gray-600">
-                          Please upload or generate an edited video to view it
-                          here.
-                        </p>
-                      </div>
-                    )}
+                            }}
+                          />
+                        </div>
+                      ) : editedVideoUrl ? (
+                        <div className="flex flex-col items-center gap-4">
+                          <OverlayAddedVideo
+                            overlays={overlays}
+                            videoUrl={editedVideoUrl}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-4">
+                          <h2 className="text-lg font-medium text-gray-800">
+                            No Edited Video Available
+                          </h2>
+                          <p className="text-sm text-gray-600">
+                            Please upload or generate an edited video to view it
+                            here.
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-            {editedVideoUrl && (
-              <div className="mx-auto my-4 items-center justify-center">
-                <button
-                  onClick={downloadVideo}
-                  className="rounded-md bg-blue-500 px-4 py-2 text-center w-36 flex items-center gap-2 text-white"
-                >
-                  Download {' '}
-                  <span>
-                    <RiVideoDownloadFill size={25} />
+              )}
 
-                  </span>
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* <VideoPreview
+              {editedVideoUrl && (
+                <div className="mx-auto my-4 items-center justify-center">
+                  <button
+                    onClick={downloadVideo}
+                    className="flex w-36 items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-center text-white"
+                  >
+                    Download{' '}
+                    <span>
+                      <RiVideoDownloadFill size={25} />
+                    </span>
+                  </button>
+                </div>
+              )}
+            </div>
+            {/* <VideoPreview
             outputUrl={outputUrl}
             editedVideoUrl={editedVideoUrl}
             showComponent={showComponent}
@@ -436,7 +404,8 @@ const FavVideoEditor = () => {
             videoDuration={videoDuration}
             setVideoDuration={setVideoDuration}
           /> */}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )

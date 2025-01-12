@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import VideoWithOverlays from './AddLayovers'
 import TrimComponent from './TrimComponent'
 import DraggableTextOverlayComponent from './DraggableTextOverlay'
@@ -25,6 +25,7 @@ interface DraggableOverlayComponentProps {
   trimVideo: () => void
   applyOverlay: () => void
   download: () => void
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
@@ -39,13 +40,15 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
   setTrimRange,
   trimVideo,
   applyOverlay,
+  setIsLoading,
   videoUrl,
-  download,
 }) => {
+  useEffect(() => setIsLoading(false), [Overlays])
+
   return (
     <div className="flex w-[100%] flex-col items-center justify-start">
       <div className="flex w-full items-center justify-center gap-4">
-        <div className="w-full justify-between gap-4">
+        <div className={`mt-8 w-full justify-between gap-4 px-2`}>
           <DraggableImageOverlayComponent
             videoDuration={videoDuration}
             imageOverlays={Overlays}
@@ -62,15 +65,19 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
             videoDuration={videoDuration}
           />
         </div>
-
-        <DraggableTextOverlayComponent
-          videoDuration={videoDuration}
-          textOverlays={Overlays}
-          setTextOverlays={setOverlays}
-          textRange={textRange}
-          setTextRange={setTextRange}
-          applyOverlay={applyOverlay}
-        />
+        <div className="mx-4 h-[700px] w-[2px] bg-gray-300"></div>
+        <div
+          className={`my-5 w-full justify-between gap-4 px-2 ${videoUrl ? 'b border-red-500' : ''}`}
+        >
+          <DraggableTextOverlayComponent
+            videoDuration={videoDuration}
+            textOverlays={Overlays}
+            setTextOverlays={setOverlays}
+            textRange={textRange}
+            setTextRange={setTextRange}
+            applyOverlay={applyOverlay}
+          />
+        </div>
       </div>
     </div>
   )

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import Draggable from 'react-draggable'
 import { Overlay } from '../types'
 
 interface VideoWithOverlaysProps {
@@ -47,43 +48,45 @@ const VideoWithOverlays: React.FC<VideoWithOverlaysProps> = ({
 
   return (
     <div className="relative">
-      <video ref={videoRef} className="w-full" controls>
+      <video ref={videoRef} className="w-full rounded-lg" controls>
         <source src={videoUrl} type="video/mp4" />
       </video>
 
       {/* Render Overlays */}
       {overlays.map((overlay) =>
         overlay.type === 'text' ? (
-          <div
-            key={overlay.id}
-            id={`overlay-${overlay.id}`}
-            className="absolute"
-            style={{
-              top: `${overlay.position.y}px`,
-              left: `${overlay.position.x}px`,
-              fontSize: `${overlay.fontSize}px`,
-              fontFamily: overlay.fontStyle,
-              color: overlay.color,
-              display: 'none',
-            }}
-          >
-            {overlay.text}
-          </div>
+          <Draggable key={overlay.id}>
+            <div
+              id={`overlay-${overlay.id}`}
+              className="absolute cursor-move"
+              style={{
+                top: `${overlay.position.y}px`,
+                left: `${overlay.position.x}px`,
+                fontSize: `${overlay.fontSize}px`,
+                fontFamily: overlay.fontStyle,
+                color: overlay.color,
+                display: 'none',
+              }}
+            >
+              {overlay.text}
+            </div>
+          </Draggable>
         ) : (
-          <img
-            key={overlay.id}
-            id={`overlay-${overlay.id}`}
-            src={overlay.imageSrc}
-            className="absolute"
-            style={{
-              top: `${overlay.position.y}px`,
-              left: `${overlay.position.x}px`,
-              width: `${overlay.width}px`,
-              height: `${overlay.height}px`,
-              display: 'none',
-            }}
-            alt="Overlay"
-          />
+          <Draggable key={overlay.id}>
+            <img
+              id={`overlay-${overlay.id}`}
+              src={overlay.imageSrc}
+              className="absolute cursor-move"
+              style={{
+                top: `${overlay.position.y}px`,
+                left: `${overlay.position.x}px`,
+                width: `${overlay.width}px`,
+                height: `${overlay.height}px`,
+                display: 'none',
+              }}
+              alt="Overlay"
+            />
+          </Draggable>
         )
       )}
     </div>

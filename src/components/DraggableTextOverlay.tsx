@@ -58,7 +58,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
       }
 
       return (
-        <div className="w-[100%] border p-3">
+        <div className="w-[100%] border p-3 -mt-16">
           <h2 className="text-lg font-bold">Text Overlays</h2>
 
           <div className="mt-2 flex flex-col space-y-2">
