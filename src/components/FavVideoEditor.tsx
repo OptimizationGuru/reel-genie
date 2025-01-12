@@ -213,12 +213,6 @@ const FavVideoEditor = () => {
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
-        // const ffmpegInstance = createFFmpeg({
-        //   log: true,
-        //   corePath: 'https://localhost:5173/ffmpeg-core.js',
-        //   locateFile: (file: string) => `https://localhost:5173/${file}`,
-        // } as any)
-
         const ffmpegInstance = createFFmpeg({
           log: true,
           corePath:
