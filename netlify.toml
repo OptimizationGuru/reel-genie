@@ -1,6 +1,6 @@
 [build]
-  publish = "dist"        
-  command = "npm run build"   
+  command = "tsc -b && vite build"
+  publish = "dist"
 
 [[headers]]
   for = "/"
@@ -13,5 +13,3 @@
   [headers.values]
     Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
-
-
