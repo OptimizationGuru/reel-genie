@@ -14,5 +14,4 @@
     Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
 
-[[plugins]]
-  package = "@netlify/plugin-vite"
+
