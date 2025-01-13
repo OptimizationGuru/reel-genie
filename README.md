@@ -1,50 +1,74 @@
-# React + TypeScript + Vite
+# ClipCraft
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **ClipCraft**, your ultimate video editing companion! Trim, enhance, and add effects to your videos effortlessly. Start editing your videos today with our easy-to-use, feature-rich platform.
 
-Currently, two official plugins are available:
+## Live URL
+Access the live application here: [ClipCraft](https://clip-craft.netlify.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tools and Technologies Used
+- **Frontend**: React.js, TypeScript
+- **Styling**: Tailwind CSS
+- **Drag-and-Drop**: react-draggable
+- **Deployment**: Netlify
+- **Version Control**: Git, GitHub
 
-## Expanding the ESLint configuration
+## How to Clone the Repository
+To get a local copy of the project, follow these steps:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Open your terminal.
+2. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/clip-craft.git
+   ```
+3. Navigate to the project directory:
+   ```bash
+   cd clip-craft
+   ```
 
-- Configure the top-level `parserOptions` property like this:
+## How to Install Dependencies
+Install the required packages using npm or yarn:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+or
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+yarn install
 ```
+
+## How to Run the Application
+Run the development server to start working on the project locally:
+
+```bash
+npm start
+```
+
+or
+
+```bash
+yarn start
+```
+
+The application will be available at `http://localhost:3000` by default.
+
+## How to Build the Application
+To create an optimized production build, use the following command:
+
+```bash
+npm run build
+```
+
+or
+
+```bash
+yarn build
+```
+
+The build output will be available in the `build/` directory. Deploy it to your desired hosting platform.
+
+---
+
+Thank you for using **ClipCraft**! Happy video editing!
+
