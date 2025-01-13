@@ -16,3 +16,6 @@ export const downlodButtonName = 'Download'
 
 export const UploadVideoMsg = `Upload your video (<=5MB) to start editing with ClipCraft. 
 Whether it's trimming, adding effects, or enhancing quality, we've got you covered!`
+
+export const WelcomeMessage = `Welcome to ClipCraft
+Your ultimate video editing companion`;

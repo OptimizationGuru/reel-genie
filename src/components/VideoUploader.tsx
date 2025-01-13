@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react'
 
 import MemoizedIcon from './MemoizedIcon'
 import MemoizedVideoUploadIcon from './VideoUploadIcon'
-import { UploadVideoMsg } from '../constant'
+import { UploadVideoMsg, WelcomeMessage } from '../constant'
 
 type VideoUploaderProps = {
   onVideoUpload: (file: File) => void
@@ -52,9 +52,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-300 to-gray-800 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-6 text-center shadow-lg sm:p-8 md:max-w-lg">
         <h2 className="mb-4 text-lg font-semibold text-gray-800 sm:text-xl md:text-2xl">
-          Welcome to ClipCraft
-          <br />
-          Your ultimate video editing companion
+          {WelcomeMessage}
         </h2>
 
         {/* Upload Section */}
