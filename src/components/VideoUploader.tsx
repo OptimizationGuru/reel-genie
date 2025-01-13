@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { SiGoogledisplayandvideo360 } from 'react-icons/si'
-import { RiVideoUploadFill } from 'react-icons/ri'
+
+import MemoizedIcon from './MemoizedIcon'
+import MemoizedVideoUploadIcon from './VideoUploadIcon'
 
 type VideoUploaderProps = {
   onVideoUpload: (file: File) => void
@@ -57,15 +58,11 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
 
         {/* Upload Section */}
         <div className="mb-4 flex flex-col items-center gap-4 rounded-lg border-2 border-dashed border-gray-300 p-4 sm:p-6">
-          <SiGoogledisplayandvideo360
-            size={50}
-            color="0d9488"
-            className="text-teal-500"
-          />
+          <MemoizedIcon size={50} color="#0d9488" className="text-teal-500" />
           <label className="flex w-36 cursor-pointer items-center justify-center gap-2 rounded-md bg-teal-500 px-4 py-2 text-sm text-white hover:bg-teal-600 sm:w-40">
             Upload Video{' '}
             <span>
-              <RiVideoUploadFill size={20} />
+              <MemoizedVideoUploadIcon size={20} />
             </span>
             <input
               type="file"
