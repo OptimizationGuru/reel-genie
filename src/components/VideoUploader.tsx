@@ -2,6 +2,7 @@ import React, { useState, useEffect, memo } from 'react'
 
 import MemoizedIcon from './MemoizedIcon'
 import MemoizedVideoUploadIcon from './VideoUploadIcon'
+import { UploadVideoMsg } from '../constant'
 
 type VideoUploaderProps = {
   onVideoUpload: (file: File) => void
@@ -73,10 +74,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
           </label>
         </div>
 
-        <p className="text-sm text-gray-500 sm:text-base">
-          Upload your video to start editing with ClipCraft. Whether it's
-          trimming, adding effects, or enhancing quality, we've got you covered!
-        </p>
+        <p className="text-sm text-gray-500 sm:text-base">{UploadVideoMsg}</p>
 
         {/* Progress Bar */}
         {progress > 0 && (
