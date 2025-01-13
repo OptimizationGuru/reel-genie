@@ -66,7 +66,7 @@ or
 yarn build
 ```
 
-The build output will be available in the `build/` directory. Deploy it to your desired hosting platform.
+The build output will be available in the `dist/` directory. Deploy it to your desired hosting platform.
 
 ---
 
