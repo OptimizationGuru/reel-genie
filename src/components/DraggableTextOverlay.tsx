@@ -1,7 +1,6 @@
 import React, { useState, memo } from 'react'
-// import { SketchPicker } from 'react-color'
 import { Overlay, TextOverlayType } from '../types'
-import { SketchPicker } from 'react-color'
+import { HexColorPicker } from 'react-colorful'
 
 interface DraggableTextOverlayComponentProps {
   videoDuration: number
@@ -98,25 +97,22 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
             </div>
 
             {/* Color Picker Toggle */}
-            <div className="flex items-center">
-              <label className="text-sm">Color:</label>
-            </div>
+            <div className="relative flex flex-col gap-4 border border-yellow-500">
+              <div className="flex items-center justify-center">
+                <label className="text-sm">Color:</label>
+              </div>
 
-            {/* Color Picker (Only shows when toggled) */}
-            <div
-              className="mt-2 flex justify-center"
-              style={{ height: '100px', width: '100px' }} // Fixed height and width for color picker area
-            >
-              <SketchPicker
-                color={color}
-                onChangeComplete={(c) => setColor(c.hex)}
-                width={'100px'} // Set smaller width for SketchPicker
-                disableAlpha={false}
-              />
+              {/* Color Picker (Only shows when toggled) */}
+              <div className="absolute mt-2 flex h-[200px] w-[200px] justify-center border border-black">
+                <HexColorPicker
+                  color={color}
+                  onChange={(color) => setColor(color)}
+                  className="py-1"
+                />
+              </div>
             </div>
-
             {/* Timings */}
-            <div className="mt-8 flex flex-col gap-4">
+            <div className="mt-[200px] flex flex-col gap-4">
               <div>
                 <h3 className="text-sm">Start Time: {textRange.start}s</h3>
                 <input
