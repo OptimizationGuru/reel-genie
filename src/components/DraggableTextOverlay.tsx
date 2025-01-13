@@ -97,13 +97,13 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
             </div>
 
             {/* Color Picker Toggle */}
-            <div className="relative flex flex-col gap-4 border border-yellow-500">
+            <div className="relative flex flex-col gap-4">
               <div className="flex items-center justify-center">
                 <label className="text-sm">Color:</label>
               </div>
 
               {/* Color Picker (Only shows when toggled) */}
-              <div className="absolute mt-2 flex h-[200px] w-[200px] justify-center border border-black">
+              <div className="absolute mx-4 my-6 flex h-[200px] w-[200px] items-center justify-center">
                 <HexColorPicker
                   color={color}
                   onChange={(color) => setColor(color)}
