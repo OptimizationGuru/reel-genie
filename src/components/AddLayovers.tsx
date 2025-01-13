@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, memo } from 'react'
 import Draggable from 'react-draggable'
 import { Overlay } from '../types'
 
@@ -93,4 +93,5 @@ const VideoWithOverlays: React.FC<VideoWithOverlaysProps> = ({
   )
 }
 
-export default VideoWithOverlays
+// Memoize the component
+export default memo(VideoWithOverlays)
