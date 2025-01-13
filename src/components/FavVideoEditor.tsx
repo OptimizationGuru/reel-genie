@@ -244,7 +244,7 @@ const FavVideoEditor = () => {
         {outputUrl && (
           <div className="fixed left-0 top-0 z-50 w-full bg-gray-50 shadow-md">
             <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3">
-              <h1 className="text-2xl font-bold text-gray-700 sm:text-3xl md:text-4xl">
+              <h1 className="bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl md:text-4xl">
                 ClipCraft
               </h1>
             </div>
