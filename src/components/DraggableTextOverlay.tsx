@@ -1,6 +1,7 @@
 import React, { useState, memo } from 'react'
 // import { SketchPicker } from 'react-color'
 import { Overlay, TextOverlayType } from '../types'
+import { SketchPicker } from 'react-color'
 
 interface DraggableTextOverlayComponentProps {
   videoDuration: number
@@ -27,13 +28,6 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
       const [currentText, setCurrentText] = useState('')
       const [fontSize, setFontSize] = useState(24)
       const [fontStyle, setFontStyle] = useState('Arial')
-
-      const setTimings = (type: string, value: number) => {
-        setTextRange((prev) => ({
-          ...prev,
-          [type]: value,
-        }))
-      }
 
       const addTextOverlay = () => {
         if (currentText.trim() === '') {
@@ -109,9 +103,9 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
             </div>
 
             {/* Color Picker (Only shows when toggled) */}
-            {/* <div
+            <div
               className="mt-2 flex justify-center"
-              style={{ height: '0px', width: '0px' }} // Fixed height and width for color picker area
+              style={{ height: '100px', width: '100px' }} // Fixed height and width for color picker area
             >
               <SketchPicker
                 color={color}
@@ -119,7 +113,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
                 width={'100px'} // Set smaller width for SketchPicker
                 disableAlpha={false}
               />
-            </div> */}
+            </div>
 
             {/* Timings */}
             <div className="mt-8 flex flex-col gap-4">

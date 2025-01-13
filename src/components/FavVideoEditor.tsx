@@ -210,15 +210,39 @@ const FavVideoEditor = () => {
     }
   }, [outputUrl])
 
+  // useEffect(() => {
+  //   const loadFFmpeg = async () => {
+  //     try {
+  //       const ffmpegInstance = createFFmpeg({
+  //         log: true,
+  //         corePath:
+  //           process.env.NODE_ENV === 'production'
+  //             ? `${process.env.REACT_APP_FFMPEG_CDN_URL}/ffmpeg-core.js`
+  //             : 'https://localhost:5173/ffmpeg-core.js',
+  //       })
+
+  //       await ffmpegInstance.load()
+  //       setFfmpeg(ffmpegInstance)
+  //       setIsLoaded(true)
+  //     } catch (error) {
+  //       console.error('Failed to load FFmpeg:', error)
+  //     }
+  //   }
+
+  //   loadFFmpeg()
+  // }, [])
+
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
+        const corePath =
+          import.meta.env.MODE === 'production'
+            ? `${import.meta.env.VITE_FFMPEG_CDN_URL || ''}/ffmpeg-core.js`
+            : '/ffmpeg-core.js' // Local dev path
+
         const ffmpegInstance = createFFmpeg({
           log: true,
-          corePath:
-            process.env.NODE_ENV === 'production'
-              ? `${process.env.REACT_APP_FFMPEG_CDN_URL}/ffmpeg-core.js`
-              : 'https://localhost:5173/ffmpeg-core.js',
+          corePath,
         })
 
         await ffmpegInstance.load()
