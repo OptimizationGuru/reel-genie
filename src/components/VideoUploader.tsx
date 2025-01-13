@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 
 import MemoizedIcon from './MemoizedIcon'
 import MemoizedVideoUploadIcon from './VideoUploadIcon'
@@ -95,4 +95,4 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   )
 }
 
-export default VideoUploader
+export default memo(VideoUploader)

@@ -352,7 +352,7 @@ const FavVideoEditor = () => {
                           />
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center gap-4 text-center">
+                        <div className="mt-8 flex flex-col items-center gap-4 text-center">
                           <h2 className="text-lg font-medium text-gray-800 sm:text-xl">
                             {infoMsg2}
                           </h2>
