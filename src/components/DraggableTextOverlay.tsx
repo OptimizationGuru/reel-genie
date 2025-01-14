@@ -1,6 +1,9 @@
 import React, { useState, memo } from 'react'
 import { Overlay, TextOverlayType } from '../types'
 import { HexColorPicker } from 'react-colorful'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../store'
+import { setOverlaysatSlice } from '../store/slices/EditReelSlice'
 
 interface DraggableTextOverlayComponentProps {
   videoDuration: number
@@ -27,6 +30,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
       const [currentText, setCurrentText] = useState('')
       const [fontSize, setFontSize] = useState(24)
       const [fontStyle, setFontStyle] = useState('Arial')
+      const dispatch = useDispatch<AppDispatch>()
 
       const addTextOverlay = () => {
         if (currentText.trim() === '') {
@@ -46,6 +50,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
           endTime: Number(textRange.end),
         }
         setTextOverlays([...textOverlays, newOverlay])
+        dispatch(setOverlaysatSlice([...textOverlays, newOverlay]))
         setCurrentText('')
         applyOverlay()
       }

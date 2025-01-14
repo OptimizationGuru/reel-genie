@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import VideoWithOverlays from './AddLayovers'
+import React, { useEffect } from 'react'
 import TrimComponent from './TrimComponent'
 import DraggableTextOverlayComponent from './DraggableTextOverlay'
 import DraggableImageOverlayComponent from './DraggableImageOverlay'
@@ -41,9 +40,8 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
   trimVideo,
   applyOverlay,
   setIsLoading,
-  videoUrl,
 }) => {
-  useEffect(() => setIsLoading(false), [Overlays])
+  useEffect(() => setIsLoading(false), [Overlays, setIsLoading])
 
   return (
     <div className="flex h-auto w-full flex-col items-center justify-start">
@@ -71,9 +69,7 @@ const EditorConsole: React.FC<DraggableOverlayComponentProps> = ({
 
         {/* Right Section - TextOverlay */}
         <div
-          className={`flex h-auto w-full flex-col items-center gap-4 lg:w-1/2 ${
-            videoUrl ? '' : ''
-          }`}
+          className={`flex h-auto w-full flex-col items-center gap-4 lg:w-1/2`}
         >
           <DraggableTextOverlayComponent
             videoDuration={videoDuration}

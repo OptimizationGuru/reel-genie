@@ -93,5 +93,5 @@ const VideoWithOverlays: React.FC<VideoWithOverlaysProps> = ({
   )
 }
 
-// Memoize the component
+
 export default memo(VideoWithOverlays)

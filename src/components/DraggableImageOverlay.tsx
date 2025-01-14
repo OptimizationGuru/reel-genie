@@ -1,5 +1,8 @@
 import React, { useState, useCallback, memo } from 'react'
 import { ImageOverlayType, Overlay } from '../types'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../store'
+import { setOverlaysatSlice } from '../store/slices/EditReelSlice'
 
 interface DraggableImageOverlayComponentProps {
   imageOverlays: Overlay[]
@@ -13,7 +16,7 @@ interface DraggableImageOverlayComponentProps {
 }
 
 const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentProps> =
-  React.memo(
+  memo(
     ({
       imageOverlays,
       setImageOverlays,
@@ -26,6 +29,7 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
       const [imageHeight, setImageHeight] = useState<number>(100)
       const [imageWidth, setImageWidth] = useState<number>(100)
       const [imageName, setImageName] = useState<string | null>(null)
+      const dispatch = useDispatch<AppDispatch>()
 
       const setTimings = useCallback(
         (type: string, value: number) => {
@@ -67,6 +71,8 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
           endTime: Number(imageRange.end),
         }
         setImageOverlays([...imageOverlays, newOverlay])
+        dispatch(setOverlaysatSlice([...imageOverlays, newOverlay]))
+
         setImageUrl(null)
         applyOverlay()
       }, [
@@ -77,6 +83,7 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
         setImageOverlays,
         applyOverlay,
         imageOverlays,
+        dispatch,
       ])
 
       return (

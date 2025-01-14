@@ -14,9 +14,11 @@ export const infoMsg2 = ' No Edited Video Available'
 
 export const downlodButtonName = 'Download'
 
-export const UploadVideoMsg = `Upload your video (<=5MB) to start editing with ClipCraft. 
+export const UploadVideoMsg = `Upload your video (*not more than 5MB) to start editing with ClipCraft. 
 Whether it's trimming, adding effects, or enhancing quality, we've got you covered!`
 
 export const WelcomeMessage1 = `Welcome to ClipCraft`
 
 export const WelcomeMessage2 = `Your ultimate video editing companion`
+
+export const delayTime = 1000

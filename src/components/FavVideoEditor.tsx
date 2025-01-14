@@ -3,6 +3,7 @@ import { createFFmpeg, fetchFile, FFmpeg } from '@ffmpeg/ffmpeg'
 import OverlayAddedVideo from './AddLayovers'
 import EditorConsole from './EditorConsole'
 import VideoUploader from './VideoUploader'
+import { RootState, AppDispatch } from '../store/index'
 import {
   downlodButtonName,
   infoMsg,
@@ -14,15 +15,24 @@ import {
 
 import { RiVideoDownloadFill } from 'react-icons/ri'
 import Loader from './Loader'
-import { ImageOverlayType, Overlay, TextOverlayType } from '../types'
+import { Overlay } from '../types'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  setOriginalVideoUrl,
+  setVideoUrlatSlice,
+} from '../store/slices/EditReelSlice'
 
 const FavVideoEditor = () => {
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null)
-  const [textOverlays, setTextOverlays] = useState<TextOverlayType[]>([])
-  const [imageOverlays, setImageOverlays] = useState<ImageOverlayType[]>([])
-  const [overlays, setOverlays] = useState<Overlay[]>([])
+
   const [endTime, setEndTime] = useState<string>('')
+  const [overlays, setOverlays] = useState<Overlay[]>([])
   const [trimRange, setTrimRange] = useState({ start: '0', end: '100' })
+
+  const dispatch = useDispatch<AppDispatch>()
+
+  const { editing } = useSelector((state: RootState) => state)
+  const { updatedVideoUrl, sliceOverlays, originalVideoUrl } = editing
 
   const [textOverlayRange, setTextOverlayRange] = useState({
     start: '0',
@@ -34,7 +44,6 @@ const FavVideoEditor = () => {
   })
 
   const [inputFile, setInputFile] = useState<File | null>(null)
-  const [outputUrl, setOutputUrl] = useState('')
   const [isLoaded, setIsLoaded] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -44,23 +53,30 @@ const FavVideoEditor = () => {
   const [showComponent, setShowComponent] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
 
+  const handleSetUrl = (url: string) => {
+    dispatch(setVideoUrlatSlice(url))
+  }
+
   // Handle file upload
   const processVideo = async (file: File) => {
     if (!ffmpeg || !isLoaded) return
+
     setIsProcessing(true)
     const video = await fetchFile(file)
+
     ffmpeg.FS('writeFile', 'input.mp4', video)
 
     await ffmpeg.run('-i', 'input.mp4', '-vf', 'scale=640:360', 'output.mp4')
 
     const output = ffmpeg.FS('readFile', 'output.mp4')
+
     const blob = new Blob([output.buffer], { type: 'video/mp4' })
-    setOutputUrl(URL.createObjectURL(blob))
+
+    dispatch(setOriginalVideoUrl(URL.createObjectURL(blob)))
     setIsProcessing(false)
   }
 
   const trimVideoWithRange = async () => {
-    console.log('trim called')
     if (!ffmpeg || !isLoaded || !videoDuration) return
 
     const start = parseFloat(trimRange.start)
@@ -95,6 +111,7 @@ const FavVideoEditor = () => {
     const trimmedOutput = ffmpeg.FS('readFile', 'trimmed.mp4')
     const trimmedBlob = new Blob([trimmedOutput.buffer], { type: 'video/mp4' })
     setEditedVideoUrl(URL.createObjectURL(trimmedBlob))
+    handleSetUrl(URL.createObjectURL(trimmedBlob))
   }
 
   const processVideoWithOverlays = async () => {
@@ -177,16 +194,15 @@ const FavVideoEditor = () => {
     const data = ffmpeg.FS('readFile', 'output.mp4')
     const blob = new Blob([data.buffer], { type: 'video/mp4' })
     setEditedVideoUrl(URL.createObjectURL(blob))
+    handleSetUrl(URL.createObjectURL(blob))
     setIsProcessing(false)
-    setTextOverlays(textOverlays)
-    setImageOverlays(imageOverlays)
   }
 
   // Function to download the processed video
   const downloadVideo = () => {
-    if (editedVideoUrl) {
+    if (updatedVideoUrl) {
       const link = document.createElement('a')
-      link.href = editedVideoUrl
+      link.href = updatedVideoUrl
       link.download = 'processed_video.mp4'
       link.click()
     } else {
@@ -208,7 +224,7 @@ const FavVideoEditor = () => {
         }
       }
     }
-  }, [outputUrl])
+  }, [originalVideoUrl])
 
   useEffect(() => {
     const loadFFmpeg = async () => {
@@ -241,7 +257,7 @@ const FavVideoEditor = () => {
 
       <div className="h-auto w-full gap-4">
         {/* Header */}
-        {outputUrl && (
+        {originalVideoUrl && (
           <div className="fixed left-0 top-0 z-50 w-full bg-gray-50 shadow-md">
             <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3">
               <h1 className="bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl md:text-4xl">
@@ -252,7 +268,7 @@ const FavVideoEditor = () => {
         )}
 
         {/* Video Uploader */}
-        {!outputUrl && (
+        {!originalVideoUrl?.length && (
           <VideoUploader
             onVideoUpload={processVideo}
             isProcessing={isProcessing}
@@ -261,12 +277,12 @@ const FavVideoEditor = () => {
         )}
 
         {/* Video Editor Section */}
-        {outputUrl && (
+        {originalVideoUrl && (
           <div className="relative mt-4 flex flex-col gap-8 md:flex-row">
             {/* Editor Console */}
             <div
               className={`w-full rounded-2xl bg-gray-50 pt-4 shadow-xl md:w-[55%] ${
-                outputUrl ? '' : ''
+                originalVideoUrl ? '' : ''
               }`}
             >
               <EditorConsole
@@ -281,7 +297,7 @@ const FavVideoEditor = () => {
                 setTrimRange={setTrimRange}
                 trimVideo={trimVideoWithRange}
                 applyOverlay={processVideoWithOverlays}
-                videoUrl={editedVideoUrl}
+                videoUrl={updatedVideoUrl}
                 download={downloadVideo}
                 setIsLoading={setIsLoading}
               />
@@ -289,11 +305,9 @@ const FavVideoEditor = () => {
 
             {/* Video Preview and Download */}
             <div
-              className={`flex h-[450px] w-full flex-col rounded-2xl bg-gray-50 md:w-[45%] ${
-                outputUrl ? '' : ''
-              }`}
+              className={`flex h-[450px] w-full flex-col rounded-2xl bg-gray-50 md:w-[45%]`}
             >
-              {outputUrl && (
+              {originalVideoUrl && (
                 <div className="mx-auto flex w-full max-w-lg flex-col gap-4 py-8">
                   {/* Tab Navigation */}
                   <div className="flex justify-center border-b border-gray-300">
@@ -327,7 +341,7 @@ const FavVideoEditor = () => {
                       {showComponent === 1 ? (
                         <div className="flex w-full flex-col items-center gap-4">
                           <video
-                            src={outputUrl}
+                            src={originalVideoUrl}
                             controls
                             className="w-full rounded-lg shadow-md sm:w-[600px] lg:w-[800px] xl:w-[1000px]"
                             ref={(ref) => {
@@ -347,8 +361,8 @@ const FavVideoEditor = () => {
                       ) : editedVideoUrl ? (
                         <div className="flex flex-col items-center gap-4">
                           <OverlayAddedVideo
-                            overlays={overlays}
-                            videoUrl={editedVideoUrl}
+                            overlays={sliceOverlays}
+                            videoUrl={updatedVideoUrl}
                           />
                         </div>
                       ) : (
@@ -365,7 +379,7 @@ const FavVideoEditor = () => {
 
                     {/* Download Button */}
                     <div className="mx-auto my-2 flex h-16 w-36 items-center justify-center">
-                      {editedVideoUrl && (
+                      {updatedVideoUrl && (
                         <button
                           onClick={downloadVideo}
                           className="flex w-36 items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"

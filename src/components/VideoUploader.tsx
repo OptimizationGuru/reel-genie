@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react'
 
 import MemoizedIcon from './MemoizedIcon'
 import MemoizedVideoUploadIcon from './VideoUploadIcon'
-import { UploadVideoMsg, WelcomeMessage, WelcomeMessage2 } from '../constant'
+import { UploadVideoMsg, WelcomeMessage1, WelcomeMessage2 } from '../constant'
 
 type VideoUploaderProps = {
   onVideoUpload: (file: File) => void
@@ -20,6 +20,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0]
+
       onVideoUpload(file)
       saveFile(file)
     }
@@ -27,7 +28,6 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
 
   const simulateProcessing = async () => {
     let currentProgress = 0
-    console.log(currentProgress, 'currentProgress')
     while (isProcessing && currentProgress < 100) {
       if (currentProgress < 95) {
         currentProgress += 5
@@ -52,7 +52,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-300 to-gray-800 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-6 text-center shadow-lg sm:p-8 md:max-w-lg">
         <h2 className="mb-4 text-lg font-semibold text-gray-800 sm:text-xl md:text-2xl">
-          {WelcomeMessage} <br /> {WelcomeMessage2}
+          {WelcomeMessage1} <br /> {WelcomeMessage2}
         </h2>
 
         {/* Upload Section */}
