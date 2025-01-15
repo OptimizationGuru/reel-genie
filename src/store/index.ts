@@ -17,6 +17,8 @@ const loadState = (): PreloadedState => {
             updatedVideoUrl: '',
             sliceOverlays: [],
             trimRange: { start: '0', end: '0' },
+            originalVideoUrl: '',
+            isLoading: false,
           },
         }
   } catch (e) {
@@ -27,6 +29,7 @@ const loadState = (): PreloadedState => {
         originalVideoUrl: '',
         sliceOverlays: [],
         trimRange: { start: '0', end: '100' },
+        isLoading: false,
       },
     }
   }

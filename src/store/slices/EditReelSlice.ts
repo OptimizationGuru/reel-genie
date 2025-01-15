@@ -6,6 +6,7 @@ export interface EditingState {
   originalVideoUrl: string
   sliceOverlays: Overlay[]
   trimRange: { start: string; end: string }
+  isLoading: boolean
 }
 
 const initialState: EditingState = {
@@ -13,12 +14,17 @@ const initialState: EditingState = {
   originalVideoUrl: '',
   sliceOverlays: [],
   trimRange: { start: '0', end: '0' },
+  isLoading: false,
 }
 
 const editingSlice = createSlice({
   name: 'editing',
   initialState,
   reducers: {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload
+    },
+
     setOriginalVideoUrl: (state, action: PayloadAction<string>) => {
       state.originalVideoUrl = action.payload
     },
@@ -41,6 +47,7 @@ const editingSlice = createSlice({
 })
 
 export const {
+  setLoading,
   setOriginalVideoUrl,
   setVideoUrlatSlice,
   setOverlaysatSlice,
