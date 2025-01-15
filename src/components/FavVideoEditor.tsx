@@ -15,9 +15,9 @@ import {
 
 import { RiVideoDownloadFill } from 'react-icons/ri'
 import Loader from './Loader'
-import { Overlay } from '../types'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  setLoading,
   setOriginalVideoUrl,
   setVideoUrlatSlice,
 } from '../store/slices/EditReelSlice'
@@ -26,13 +26,13 @@ const FavVideoEditor = () => {
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null)
 
   const [endTime, setEndTime] = useState<string>('')
-  const [overlays, setOverlays] = useState<Overlay[]>([])
   const [trimRange, setTrimRange] = useState({ start: '0', end: '100' })
 
   const dispatch = useDispatch<AppDispatch>()
 
   const { editing } = useSelector((state: RootState) => state)
-  const { updatedVideoUrl, sliceOverlays, originalVideoUrl } = editing
+  const { updatedVideoUrl, sliceOverlays, originalVideoUrl, isLoading } =
+    editing
 
   const [textOverlayRange, setTextOverlayRange] = useState({
     start: '0',
@@ -51,7 +51,6 @@ const FavVideoEditor = () => {
   const [editedVideoUrl, setEditedVideoUrl] = useState<string>('')
 
   const [showComponent, setShowComponent] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
 
   const handleSetUrl = (url: string) => {
     dispatch(setVideoUrlatSlice(url))
@@ -62,6 +61,7 @@ const FavVideoEditor = () => {
     if (!ffmpeg || !isLoaded) return
 
     setIsProcessing(true)
+    dispatch(setLoading(true))
     const video = await fetchFile(file)
 
     ffmpeg.FS('writeFile', 'input.mp4', video)
@@ -73,21 +73,27 @@ const FavVideoEditor = () => {
     const blob = new Blob([output.buffer], { type: 'video/mp4' })
 
     dispatch(setOriginalVideoUrl(URL.createObjectURL(blob)))
+
+    dispatch(setLoading(false))
     setIsProcessing(false)
   }
 
   const trimVideoWithRange = async () => {
     if (!ffmpeg || !isLoaded || !videoDuration) return
 
+    dispatch(setLoading(true))
     const start = parseFloat(trimRange.start)
     let end = parseFloat(trimRange.end)
     const duration = (end - start).toFixed(2)
 
     if (start >= end) {
+      dispatch(setLoading(false))
       alert({ warningMsg1 })
+
       return
     }
     if (start < 0) {
+      dispatch(setLoading(false))
       alert({ warningMsg2 })
       return
     }
@@ -112,17 +118,19 @@ const FavVideoEditor = () => {
     const trimmedBlob = new Blob([trimmedOutput.buffer], { type: 'video/mp4' })
     setEditedVideoUrl(URL.createObjectURL(trimmedBlob))
     handleSetUrl(URL.createObjectURL(trimmedBlob))
+    dispatch(setLoading(false))
   }
 
   const processVideoWithOverlays = async () => {
     if (!ffmpeg || !isLoaded || !inputFile) return
 
-    setIsProcessing(true)
+    dispatch(setLoading(true))
+
     if (editedVideoUrl && showComponent !== 2) setShowComponent(2)
     ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(inputFile))
 
-    const textOverlays = overlays.filter((el) => el.type === 'text')
-    const imageOverlays = overlays.filter((el) => el.type === 'image')
+    const textOverlays = sliceOverlays.filter((el) => el.type === 'text')
+    const imageOverlays = sliceOverlays.filter((el) => el.type === 'image')
 
     const drawTextFilters = textOverlays
       .map((overlay) => {
@@ -195,17 +203,20 @@ const FavVideoEditor = () => {
     const blob = new Blob([data.buffer], { type: 'video/mp4' })
     setEditedVideoUrl(URL.createObjectURL(blob))
     handleSetUrl(URL.createObjectURL(blob))
-    setIsProcessing(false)
+    dispatch(setLoading(false))
   }
 
   // Function to download the processed video
   const downloadVideo = () => {
+    dispatch(setLoading(true))
     if (updatedVideoUrl) {
       const link = document.createElement('a')
       link.href = updatedVideoUrl
       link.download = 'processed_video.mp4'
       link.click()
+      dispatch(setLoading(false))
     } else {
+      dispatch(setLoading(false))
       alert('Please generate a preview first!')
     }
   }
@@ -287,8 +298,7 @@ const FavVideoEditor = () => {
             >
               <EditorConsole
                 videoDuration={videoDuration}
-                Overlays={overlays}
-                setOverlays={setOverlays}
+                Overlays={sliceOverlays}
                 textRange={textOverlayRange}
                 imageRange={imgOverlayRange}
                 setTextRange={setTextOverlayRange}
@@ -299,7 +309,6 @@ const FavVideoEditor = () => {
                 applyOverlay={processVideoWithOverlays}
                 videoUrl={updatedVideoUrl}
                 download={downloadVideo}
-                setIsLoading={setIsLoading}
               />
             </div>
 

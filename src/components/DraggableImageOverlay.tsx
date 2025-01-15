@@ -6,7 +6,6 @@ import { setOverlaysatSlice } from '../store/slices/EditReelSlice'
 
 interface DraggableImageOverlayComponentProps {
   imageOverlays: Overlay[]
-  setImageOverlays: React.Dispatch<React.SetStateAction<Overlay[]>>
   imageRange: { start: string; end: string }
   setImageRange: React.Dispatch<
     React.SetStateAction<{ start: string; end: string }>
@@ -19,7 +18,6 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
   memo(
     ({
       imageOverlays,
-      setImageOverlays,
       imageRange,
       setImageRange,
       videoDuration,
@@ -70,7 +68,6 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
           startTime: Number(imageRange.start),
           endTime: Number(imageRange.end),
         }
-        setImageOverlays([...imageOverlays, newOverlay])
         dispatch(setOverlaysatSlice([...imageOverlays, newOverlay]))
 
         setImageUrl(null)
@@ -80,7 +77,6 @@ const DraggableImageOverlayComponent: React.FC<DraggableImageOverlayComponentPro
         imageHeight,
         imageWidth,
         imageRange,
-        setImageOverlays,
         applyOverlay,
         imageOverlays,
         dispatch,

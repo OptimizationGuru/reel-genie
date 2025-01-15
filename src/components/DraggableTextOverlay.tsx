@@ -8,7 +8,6 @@ import { setOverlaysatSlice } from '../store/slices/EditReelSlice'
 interface DraggableTextOverlayComponentProps {
   videoDuration: number
   textOverlays: Overlay[]
-  setTextOverlays: React.Dispatch<React.SetStateAction<Overlay[]>>
   textRange: { start: string; end: string }
   setTextRange: React.Dispatch<
     React.SetStateAction<{ start: string; end: string }>
@@ -21,7 +20,6 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
     ({
       videoDuration,
       textOverlays,
-      setTextOverlays,
       textRange,
       setTextRange,
       applyOverlay,
@@ -49,7 +47,6 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayComponentProps
           startTime: Number(textRange.start),
           endTime: Number(textRange.end),
         }
-        setTextOverlays([...textOverlays, newOverlay])
         dispatch(setOverlaysatSlice([...textOverlays, newOverlay]))
         setCurrentText('')
         applyOverlay()
