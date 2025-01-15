@@ -46,11 +46,9 @@ const FavVideoEditor = () => {
   const [inputFile, setInputFile] = useState<File | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
-
   const [videoDuration, setVideoDuration] = useState<number>(0)
-  const [editedVideoUrl, setEditedVideoUrl] = useState<string>('')
-
   const [showComponent, setShowComponent] = useState(1)
+  const [isVideoTrimmed, SetVideoTrimmed] = useState(false)
 
   const handleSetUrl = (url: string) => {
     dispatch(setVideoUrlatSlice(url))
@@ -116,8 +114,9 @@ const FavVideoEditor = () => {
 
     const trimmedOutput = ffmpeg.FS('readFile', 'trimmed.mp4')
     const trimmedBlob = new Blob([trimmedOutput.buffer], { type: 'video/mp4' })
-    setEditedVideoUrl(URL.createObjectURL(trimmedBlob))
+
     handleSetUrl(URL.createObjectURL(trimmedBlob))
+    if (!isVideoTrimmed) SetVideoTrimmed(true)
     dispatch(setLoading(false))
   }
 
@@ -126,7 +125,7 @@ const FavVideoEditor = () => {
 
     dispatch(setLoading(true))
 
-    if (editedVideoUrl && showComponent !== 2) setShowComponent(2)
+    if (updatedVideoUrl && showComponent !== 2) setShowComponent(2)
     ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(inputFile))
 
     const textOverlays = sliceOverlays.filter((el) => el.type === 'text')
@@ -201,7 +200,7 @@ const FavVideoEditor = () => {
 
     const data = ffmpeg.FS('readFile', 'output.mp4')
     const blob = new Blob([data.buffer], { type: 'video/mp4' })
-    setEditedVideoUrl(URL.createObjectURL(blob))
+
     handleSetUrl(URL.createObjectURL(blob))
     dispatch(setLoading(false))
   }
@@ -367,7 +366,7 @@ const FavVideoEditor = () => {
                             }}
                           />
                         </div>
-                      ) : editedVideoUrl ? (
+                      ) : updatedVideoUrl ? (
                         <div className="flex flex-col items-center gap-4">
                           <OverlayAddedVideo
                             overlays={sliceOverlays}
@@ -388,7 +387,7 @@ const FavVideoEditor = () => {
 
                     {/* Download Button */}
                     <div className="mx-auto my-2 flex h-16 w-36 items-center justify-center">
-                      {updatedVideoUrl && (
+                      {isVideoTrimmed && (
                         <button
                           onClick={downloadVideo}
                           className="flex w-36 items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
