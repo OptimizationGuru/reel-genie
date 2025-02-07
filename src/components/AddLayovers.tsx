@@ -50,7 +50,7 @@ const VideoWithOverlays: React.FC<VideoWithOverlaysProps> = ({
     <div className="relative">
       <video ref={videoRef} className="w-full rounded-lg" controls>
         <source src={videoUrl} type="video/mp4" />
-
+       </video>
         {/* Render Overlays */}
         {overlays.map((overlay) =>
           overlay.type === 'text' ? (
@@ -88,7 +88,7 @@ const VideoWithOverlays: React.FC<VideoWithOverlaysProps> = ({
             </Draggable>
           )
         )}
-      </video>
+     
     </div>
   )
 }
