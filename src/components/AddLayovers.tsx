@@ -50,48 +50,47 @@ const VideoWithOverlays: React.FC<VideoWithOverlaysProps> = ({
     <div className="relative">
       <video ref={videoRef} className="w-full rounded-lg" controls>
         <source src={videoUrl} type="video/mp4" />
-      </video>
 
-      {/* Render Overlays */}
-      {overlays.map((overlay) =>
-        overlay.type === 'text' ? (
-          <Draggable key={overlay.id}>
-            <div
-              id={`overlay-${overlay.id}`}
-              className="absolute cursor-move"
-              style={{
-                top: `${overlay.position.y}px`,
-                left: `${overlay.position.x}px`,
-                fontSize: `${overlay.fontSize}px`,
-                fontFamily: overlay.fontStyle,
-                color: overlay.color,
-                display: 'none',
-              }}
-            >
-              {overlay.text}
-            </div>
-          </Draggable>
-        ) : (
-          <Draggable key={overlay.id}>
-            <img
-              id={`overlay-${overlay.id}`}
-              src={overlay.imageSrc}
-              className="absolute cursor-move"
-              style={{
-                top: `${overlay.position.y}px`,
-                left: `${overlay.position.x}px`,
-                width: `${overlay.width}px`,
-                height: `${overlay.height}px`,
-                display: 'none',
-              }}
-              alt="Overlay"
-            />
-          </Draggable>
-        )
-      )}
+        {/* Render Overlays */}
+        {overlays.map((overlay) =>
+          overlay.type === 'text' ? (
+            <Draggable key={overlay.id}>
+              <div
+                id={`overlay-${overlay.id}`}
+                className="absolute cursor-move"
+                style={{
+                  top: `${overlay.position.y}px`,
+                  left: `${overlay.position.x}px`,
+                  fontSize: `${overlay.fontSize}px`,
+                  fontFamily: overlay.fontStyle,
+                  color: overlay.color,
+                  display: 'none',
+                }}
+              >
+                {overlay.text}
+              </div>
+            </Draggable>
+          ) : (
+            <Draggable key={overlay.id}>
+              <img
+                id={`overlay-${overlay.id}`}
+                src={overlay.imageSrc}
+                className="absolute cursor-move"
+                style={{
+                  top: `${overlay.position.y}px`,
+                  left: `${overlay.position.x}px`,
+                  width: `${overlay.width}px`,
+                  height: `${overlay.height}px`,
+                  display: 'none',
+                }}
+                alt="Overlay"
+              />
+            </Draggable>
+          )
+        )}
+      </video>
     </div>
   )
 }
-
 
 export default memo(VideoWithOverlays)
